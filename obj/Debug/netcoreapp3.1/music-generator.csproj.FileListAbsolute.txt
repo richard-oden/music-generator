@@ -1,0 +1,13 @@
+C:\Users\richa\Desktop\c#-projects\music-generator\obj\Debug\netcoreapp3.1\music-generator.csprojAssemblyReference.cache
+C:\Users\richa\Desktop\c#-projects\music-generator\obj\Debug\netcoreapp3.1\music-generator.AssemblyInfoInputs.cache
+C:\Users\richa\Desktop\c#-projects\music-generator\obj\Debug\netcoreapp3.1\music-generator.AssemblyInfo.cs
+C:\Users\richa\Desktop\c#-projects\music-generator\obj\Debug\netcoreapp3.1\music-generator.csproj.CoreCompileInputs.cache
+C:\Users\richa\Desktop\c#-projects\music-generator\bin\Debug\netcoreapp3.1\music-generator.exe
+C:\Users\richa\Desktop\c#-projects\music-generator\bin\Debug\netcoreapp3.1\music-generator.deps.json
+C:\Users\richa\Desktop\c#-projects\music-generator\bin\Debug\netcoreapp3.1\music-generator.runtimeconfig.json
+C:\Users\richa\Desktop\c#-projects\music-generator\bin\Debug\netcoreapp3.1\music-generator.runtimeconfig.dev.json
+C:\Users\richa\Desktop\c#-projects\music-generator\bin\Debug\netcoreapp3.1\music-generator.dll
+C:\Users\richa\Desktop\c#-projects\music-generator\bin\Debug\netcoreapp3.1\music-generator.pdb
+C:\Users\richa\Desktop\c#-projects\music-generator\obj\Debug\netcoreapp3.1\music-generator.dll
+C:\Users\richa\Desktop\c#-projects\music-generator\obj\Debug\netcoreapp3.1\music-generator.pdb
+C:\Users\richa\Desktop\c#-projects\music-generator\obj\Debug\netcoreapp3.1\music-generator.genruntimeconfig.cache
