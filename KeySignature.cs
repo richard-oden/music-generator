@@ -4,9 +4,28 @@ namespace MusicGenerator
 {
     class KeySignature
     {
-        public readonly char Tonic;
-        public readonly string Accidental;
-        public readonly string Mode;
+        public char Tonic {get; private set;}
+        public string Accidental {get; private set;}
+        public string Mode {get; private set;}
+        // Returns number of flats or sharps (flats are negative, sharps are positive):
+        public int numAccidentals
+        {
+            get
+            {
+                Theory theory = new Theory();
+                int num = 0;
+                if (Accidental == "#") num = 7;
+                if (Accidental == "b") num = -7;
+                if (Mode == "Minor") num -= 3;
+                foreach (char n in theory.CircleOfFifths)
+                {
+                    if (n == Tonic) break;
+                    num++;
+                }
+                return num;
+            }
+        }
+        public string typeOfAccidental => numAccidentals > 0 ? "#" : "b";
 
         // Generates randomly:
         public KeySignature() 
@@ -26,22 +45,6 @@ namespace MusicGenerator
             Tonic = tonic;
             Accidental = accidental;
             Mode = mode;
-        }
-        
-        // Returns number of flats or sharps (flats are negative, sharps are positive):
-        public int GetNumAccidentals()
-        {
-            Theory theory = new Theory();
-            int num = 0;
-            if (Accidental == "#") num = 7;
-            if (Accidental == "b") num = -7;
-            if (Mode == "Minor") num -= 3;
-            foreach (char n in theory.CircleOfFifths)
-            {
-                if (n == Tonic) break;
-                num++;
-            }
-            return num;
         }
     }
 }

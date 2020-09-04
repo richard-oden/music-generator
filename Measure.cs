@@ -5,8 +5,8 @@ namespace MusicGenerator
 {
     class Measure
     {
-        public readonly double MeasureLength;
-        public readonly List<Note> Notes;
+        public double MeasureLength {get; private set;}
+        public List<Note> Notes {get; private set;}
 
         public Measure(KeySignature keySig, TimeSignature timeSig)
         {

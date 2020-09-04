@@ -4,17 +4,17 @@ namespace MusicGenerator
 {
     class TimeSignature
     {
-        public readonly int NotesPerMeasure;
-        public readonly int NoteDuration;
+        public int NotesPerMeasure {get; private set;}
+        public int NoteDuration {get; private set;}
 
         // Generates randomly:
         public TimeSignature()
         {
             Random random = new Random();
-            int[] npms = {2, 3, 4, 6};
-            NotesPerMeasure = npms[random.Next(0, npms.Length)];
-            int[] durations = {2, 4, 8};
-            NoteDuration = durations[random.Next(0, durations.Length)];
+            int[] possibleNotesPerMeasure = {2, 3, 4, 6};
+            NotesPerMeasure = possibleNotesPerMeasure[random.Next(0, possibleNotesPerMeasure.Length)];
+            int[] possibleDurations = {2, 4, 8};
+            NoteDuration = possibleDurations[random.Next(0, possibleDurations.Length)];
         }
 
         // Generates with given values:

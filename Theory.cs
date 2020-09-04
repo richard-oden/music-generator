@@ -4,10 +4,10 @@ namespace MusicGenerator
 {
     class Theory
     {
-        public readonly char[] CircleOfFifths;
-        public readonly char[] OrderOfSharps;
-        public readonly char[] OrderOfFlats;
-        public readonly Dictionary<string, double> Durations;
+        public char[] CircleOfFifths {get; private set;}
+        public char[] OrderOfSharps {get; private set;}
+        public char[] OrderOfFlats {get; private set;}
+        public Dictionary<string, double> Durations {get; private set;}
 
         public Theory()
         {

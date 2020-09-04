@@ -6,11 +6,11 @@ namespace MusicGenerator
 {
     class Note
     {
-        public readonly char NoteName;
-        public readonly string Accidental;
-        public readonly int Octave;
-        public readonly double Duration;
-        public readonly string RhythmicValue;
+        public char NoteName {get; private set;}
+        public string Accidental {get; private set;}
+        public int Octave {get; private set;}
+        public double Duration {get; private set;}
+        public string RhythmicValue {get; private set;}
 
         // Generates randomly:
         public Note(KeySignature keySig)
@@ -22,14 +22,13 @@ namespace MusicGenerator
             NoteName = theory.CircleOfFifths[random.Next(0, theory.CircleOfFifths.Length)];
             Octave = octaves[random.Next(0, octaves.Length)];
 
-            int numAccidentals = keySig.GetNumAccidentals();
-            if (numAccidentals > 0)
+            if (keySig.typeOfAccidental == "#")
             {
-                Accidental = Array.IndexOf(theory.OrderOfSharps, NoteName) < numAccidentals ? "#" : "";
+                Accidental = Array.IndexOf(theory.OrderOfSharps, NoteName) < keySig.numAccidentals ? "#" : "";
             }
             else
             {
-                Accidental = Array.IndexOf(theory.OrderOfFlats, NoteName) < Math.Abs(numAccidentals) ? "b" : "";
+                Accidental = Array.IndexOf(theory.OrderOfFlats, NoteName) < Math.Abs(keySig.numAccidentals) ? "b" : "";
             }
 
             KeyValuePair<string, double> durationKVP = theory.Durations.ElementAt(random.Next(0, theory.Durations.Count)); 
