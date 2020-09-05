@@ -27,7 +27,7 @@ namespace MusicGenerator
             _measures = measures;
         }
 
-        public void listNotes()
+        public void ListNotes()
         {
             Console.WriteLine($"The key signature is {_keySig.Tonic}{_keySig.Accidental} {_keySig.Mode}.");
             Console.WriteLine($"The time signature is {_timeSig.NotesPerMeasure}/{_timeSig.NoteDuration}.");
@@ -44,9 +44,12 @@ namespace MusicGenerator
 	        }
         }
 
-        public void printStaff()
+        public void PrintStaff()
         {
+            string[] finalStaff = new string[14];
+
             string[] trebleClef = {
+                "           ",
                 "           ",
                 " /    /\\   ",
                 "|+----|-|--",
@@ -62,12 +65,28 @@ namespace MusicGenerator
                 "    (_|    "
             };
 
-            
+            for (int i = 0; i < 14; i++)
+            {
+                finalStaff[i] += trebleClef[i];
+                foreach (List<Note> measure in _measures)
+                {
+                    foreach (Note note in measure)
+                    {
+                        string lineSegment = "";
+                        if (note.StaffLine == i) lineSegment += note.StaffNote;
+                        while (lineSegment.Length < (int)(note.Duration / 0.0625))
+                        {
+                            lineSegment += (i % 2 != 0 && (i < 12 && i > 2)) ? "-" : " ";
+                        }
+                        finalStaff[i] += lineSegment;
+                    }
+                    finalStaff[i] += (i < 12 && i > 2) ? "|" : " ";
+                }
+                Console.WriteLine(finalStaff[i]);
+            }
 
-            string[] Accidentals = new string[9];
-            int[] sharpIndices = {2, 5, 1, 4, 7, 3, 6};
-            int[] flatIndices = {6, 3, 7, 4, 8, 5, 9};
-            foreach (string line in trebleClef) Console.WriteLine(line);
+            // int[] sharpIndices = {2, 5, 1, 4, 7, 3, 6};
+            // int[] flatIndices = {6, 3, 7, 4, 8, 5, 9};
         }
     }
 }
