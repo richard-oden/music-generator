@@ -8,8 +8,8 @@ namespace MusicGenerator
     {
         public static void Main()
         {
-            Piece piece = new Piece(6, new KeySignature(), new TimeSignature());
-            piece.printStaff();
+            Piece piece = new Piece(4, new KeySignature(), new TimeSignature());
+            piece.PrintStaff();
         }
     }
 }

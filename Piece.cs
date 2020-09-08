@@ -46,6 +46,9 @@ namespace MusicGenerator
 
         public void PrintStaff()
         {
+            Console.WriteLine($"The key signature is {_keySig.Tonic}{_keySig.Accidental} {_keySig.Mode}.");
+            Console.WriteLine($"The time signature is {_timeSig.NotesPerMeasure}/{_timeSig.NoteDuration}.");
+
             string[] finalStaff = new string[14];
 
             string[] trebleClef = {
@@ -65,28 +68,63 @@ namespace MusicGenerator
                 "    (_|    "
             };
 
+            int[] accidentalIndices = _keySig.TypeOfAccidental == "#" ? new[] {3, 6, 2, 5, 8, 4, 7} : new int[] {7, 4, 8, 5, 9, 6, 10};
+            // int[] sharpIndices = {2, 5, 1, 4, 7, 3, 6};
+            // int[] flatIndices = {6, 3, 7, 4, 8, 5, 9};
+           
             for (int i = 0; i < 14; i++)
             {
+                // Determines if current line is on a space or on a line in the staff:
+                string spaceOrLine = (i % 2 != 0 && (i < 12 && i > 2)) ? "-" : " ";
+
+                // Print treble clef line:
                 finalStaff[i] += trebleClef[i];
+
+                // Print key signature line:
+                string keySigLineSegment = "";
+                
+                for (int j = 0; j < Math.Abs(_keySig.NumAccidentals); j++)
+                {
+                    keySigLineSegment += (accidentalIndices[j] == i) ? _keySig.TypeOfAccidental : spaceOrLine;
+                    keySigLineSegment += spaceOrLine;
+                }
+                finalStaff[i] += keySigLineSegment;
+
+                finalStaff[i] += spaceOrLine;
+
+                if (i == 6)
+                {
+                    finalStaff[i] += _timeSig.NotesPerMeasure;
+                }
+                else if (i == 8)
+                {
+                    finalStaff[i] += _timeSig.NoteDuration;
+                }
+                else
+                {
+                    finalStaff[i] += spaceOrLine;
+                }
+
+                finalStaff[i] += spaceOrLine;
+
+                // Print measure line:
                 foreach (List<Note> measure in _measures)
                 {
                     foreach (Note note in measure)
                     {
-                        string lineSegment = "";
-                        if (note.StaffLine == i) lineSegment += note.StaffNote;
-                        while (lineSegment.Length < (int)(note.Duration / 0.0625))
+                        string measureLineSegment = "";
+                        if (note.StaffLine == i) measureLineSegment += note.StaffNote;
+                        while (measureLineSegment.Length < (int)(note.Duration / 0.0625))
                         {
-                            lineSegment += (i % 2 != 0 && (i < 12 && i > 2)) ? "-" : " ";
+                            measureLineSegment += spaceOrLine;
                         }
-                        finalStaff[i] += lineSegment;
+                        finalStaff[i] += measureLineSegment;
                     }
+                    //Bar line:
                     finalStaff[i] += (i < 12 && i > 2) ? "|" : " ";
                 }
                 Console.WriteLine(finalStaff[i]);
             }
-
-            // int[] sharpIndices = {2, 5, 1, 4, 7, 3, 6};
-            // int[] flatIndices = {6, 3, 7, 4, 8, 5, 9};
         }
     }
 }

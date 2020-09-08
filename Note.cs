@@ -23,13 +23,13 @@ namespace MusicGenerator
             NoteName = theory.CircleOfFifths[random.Next(0, theory.CircleOfFifths.Length)];
             Octave = octaves[random.Next(0, octaves.Length)];
 
-            if (keySig.typeOfAccidental == "#")
+            if (keySig.TypeOfAccidental == "#")
             {
-                Accidental = Array.IndexOf(theory.OrderOfSharps, NoteName) < keySig.numAccidentals ? "#" : "";
+                Accidental = Array.IndexOf(theory.OrderOfSharps, NoteName) < keySig.NumAccidentals ? "#" : "";
             }
             else
             {
-                Accidental = Array.IndexOf(theory.OrderOfFlats, NoteName) < Math.Abs(keySig.numAccidentals) ? "b" : "";
+                Accidental = Array.IndexOf(theory.OrderOfFlats, NoteName) < Math.Abs(keySig.NumAccidentals) ? "b" : "";
             }
 
             // Represents position on staff (0 to 13 from top to bottom):
