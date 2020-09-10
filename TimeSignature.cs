@@ -6,15 +6,15 @@ namespace MusicGenerator
     {
         public int NotesPerMeasure {get; private set;}
         public int NoteDuration {get; private set;}
+        private static readonly Random _random = new Random();
 
         // Generates randomly:
         public TimeSignature()
         {
-            Random random = new Random();
             int[] possibleNotesPerMeasure = {2, 3, 4, 6};
-            NotesPerMeasure = possibleNotesPerMeasure[random.Next(0, possibleNotesPerMeasure.Length)];
+            NotesPerMeasure = possibleNotesPerMeasure[_random.Next(0, possibleNotesPerMeasure.Length)];
             int[] possibleDurations = {2, 4, 8};
-            NoteDuration = possibleDurations[random.Next(0, possibleDurations.Length)];
+            NoteDuration = possibleDurations[_random.Next(0, possibleDurations.Length)];
         }
 
         // Generates with given values:

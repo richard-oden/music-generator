@@ -8,7 +8,7 @@ namespace MusicGenerator
         private readonly int _numMeasure;
         private readonly KeySignature _keySig;
         private readonly TimeSignature _timeSig;
-        private readonly List<List<Note>> _measures;
+        private readonly List<List<MeasureSegment>> _measures;
 
         public Piece(int numMeasures, KeySignature keySig, TimeSignature timeSig)
         {
@@ -16,12 +16,12 @@ namespace MusicGenerator
             _keySig = keySig;
             _timeSig = timeSig;
 
-            List<List<Note>> measures = new List<List<Note>>();
+            List<List<MeasureSegment>> measures = new List<List<MeasureSegment>>();
             int currentMeasure = 0;
             while (currentMeasure < _numMeasure)
             {
                 Measure newMeasure = new Measure(keySig, timeSig);
-                measures.Add(newMeasure.Notes);
+                measures.Add(newMeasure.Contents);
                 currentMeasure++;
             }
             _measures = measures;
@@ -31,14 +31,19 @@ namespace MusicGenerator
         {
             Console.WriteLine($"The key signature is {_keySig.Tonic}{_keySig.Accidental} {_keySig.Mode}.");
             Console.WriteLine($"The time signature is {_timeSig.NotesPerMeasure}/{_timeSig.NoteDuration}.");
-            foreach (List<Note> measure in _measures)
+            foreach (List<MeasureSegment> measure in _measures)
 	        {
                 Console.WriteLine($"\nMeasure {_measures.IndexOf(measure) + 1}:");
                 string text = "";
-                foreach (Note note in measure)
+                foreach (var measureSegment in measure)
 	            {
-                    text += $"{note.NoteName}{note.Accidental}{note.Octave} {note.RhythmicValue}";
-                    text += measure.IndexOf(note) == measure.Count - 1 ? "." : ", ";
+                    if (measureSegment is Note) 
+                    {
+                        Note note = (Note)measureSegment;
+                        text += $"{note.NoteName}{note.Accidental}{note.Octave} ";
+                    }
+                    text += measureSegment.RhythmicValue;
+                    text += measure.IndexOf(measureSegment) == measure.Count - 1 ? "." : ", ";
 	            }
                 Console.WriteLine(text);
 	        }
@@ -108,13 +113,13 @@ namespace MusicGenerator
                 finalStaff[i] += spaceOrLine;
 
                 // Print measure line:
-                foreach (List<Note> measure in _measures)
+                foreach (List<MeasureSegment> measure in _measures)
                 {
-                    foreach (Note note in measure)
+                    foreach (var measureSegment in measure)
                     {
                         string measureLineSegment = "";
-                        if (note.StaffLine == i) measureLineSegment += note.StaffNote;
-                        while (measureLineSegment.Length < (int)(note.Duration / 0.0625))
+                        if (measureSegment.StaffLine == i) measureLineSegment += measureSegment.StaffSymbol;
+                        while (measureLineSegment.Length < (int)(measureSegment.Duration / 0.0625))
                         {
                             measureLineSegment += spaceOrLine;
                         }

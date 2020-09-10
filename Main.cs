@@ -9,6 +9,7 @@ namespace MusicGenerator
         public static void Main()
         {
             Piece piece = new Piece(4, new KeySignature(), new TimeSignature());
+            piece.ListNotes();
             piece.PrintStaff();
         }
     }
