@@ -8,6 +8,7 @@ namespace MusicGenerator
         public string MenuName {get; private set;}
         public string Prompt {get; private set;}
         public Dictionary<string, Action> Options {get; private set;}
+        public bool AllowExit {get; private set;} = true;
 
         public Menu(string menuName, string prompt, Dictionary<string, Action> options)
         {
@@ -16,12 +17,22 @@ namespace MusicGenerator
             Options = options;
         }
 
+        public Menu(string menuName, string prompt, Dictionary<string, Action> options, bool allowExit)
+        {
+            MenuName = menuName;
+            Prompt = prompt;
+            Options = options;
+            AllowExit = allowExit;
+        }
+
         public void OpenMenu()
         {
             bool breakOuterLoop = false;
             while (true)
             {
-                Console.WriteLine("\n" + Prompt + " Enter 'quit' to exit this menu.\n");
+                Console.Write("\n" + Prompt);
+                if (AllowExit) Console.Write(" Enter 'quit' to exit this menu.");
+                Console.WriteLine("\n");
                 foreach (var option in Options) Console.WriteLine(option.Key);
                 Console.WriteLine("");
                 string response = Console.ReadLine();
@@ -36,7 +47,7 @@ namespace MusicGenerator
                     }
                 }
                 if (breakOuterLoop) break;
-                else if (response.ToLower() == "quit")
+                else if (response.ToLower() == "quit" && AllowExit)
                 {
                     Console.WriteLine($"Exiting {MenuName}...");
                     break;
