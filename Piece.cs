@@ -5,20 +5,26 @@ namespace MusicGenerator
 {
     class Piece
     {
-        private readonly int _numMeasure;
-        private readonly KeySignature _keySig;
-        private readonly TimeSignature _timeSig;
-        private readonly List<List<MeasureSegment>> _measures;
+        private int _numMeasures = 0;
+        private KeySignature _keySig;
+        private TimeSignature _timeSig;
+        private List<List<MeasureSegment>> _measures;
+        private static Random random = new Random();
+        public bool hasBeenGenerated => _numMeasures != 0;
 
-        public Piece(int numMeasures, KeySignature keySig, TimeSignature timeSig)
+        public Piece()
         {
-            _numMeasure = numMeasures;
+        }
+
+        public void GenerateRandomly(KeySignature keySig, TimeSignature timeSig)
+        {
+            _numMeasures = random.Next(1, 16);
             _keySig = keySig;
             _timeSig = timeSig;
 
             List<List<MeasureSegment>> measures = new List<List<MeasureSegment>>();
             int currentMeasure = 0;
-            while (currentMeasure < _numMeasure)
+            while (currentMeasure < _numMeasures)
             {
                 Measure newMeasure = new Measure(keySig, timeSig);
                 measures.Add(newMeasure.Contents);
@@ -75,7 +81,7 @@ namespace MusicGenerator
 
             int[] accidentalIndices = _keySig.TypeOfAccidental == "#" ? new[] {3, 6, 2, 5, 8, 4, 7} : new int[] {7, 4, 8, 5, 9, 6, 10};
             // int[] sharpIndices = {2, 5, 1, 4, 7, 3, 6};
-            // int[] flatIndices = {6, 3, 7, 4, 8, 5, 9};
+            // int[] flatIndices = {7, 4, 8, 5, 9, 6, 10};
            
             for (int i = 0; i < 14; i++)
             {
