@@ -1,4 +1,5 @@
 using System;
+using static MusicGenerator.Theory;
 
 namespace MusicGenerator
 {
@@ -11,10 +12,8 @@ namespace MusicGenerator
         // Generates randomly:
         public TimeSignature()
         {
-            int[] possibleNotesPerMeasure = {2, 3, 4, 6};
-            NotesPerMeasure = possibleNotesPerMeasure[_random.Next(0, possibleNotesPerMeasure.Length)];
-            int[] possibleDurations = {2, 4, 8};
-            NoteDuration = possibleDurations[_random.Next(0, possibleDurations.Length)];
+            NotesPerMeasure = TimeSigNumerators[_random.Next(0, TimeSigNumerators.Length)];
+            NoteDuration = TimeSigDenominators[_random.Next(0, TimeSigDenominators.Length)];
         }
 
         // Generates with given values:

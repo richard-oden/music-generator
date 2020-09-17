@@ -1,4 +1,5 @@
 using System;
+using static MusicGenerator.Theory;
 
 namespace MusicGenerator
 {
@@ -10,7 +11,6 @@ namespace MusicGenerator
         // Returns number of flats or sharps (flats are negative, sharps are positive):
         public int NumAccidentals {get; private set;}
         public string TypeOfAccidental => NumAccidentals > 0 ? "#" : "b";
-        private static readonly Theory _theory = new Theory();
         private static readonly Random _random = new Random();
 
         // Generates randomly:
@@ -19,12 +19,12 @@ namespace MusicGenerator
             string[] accidentals = {"#", "b", ""};
             string[] modes = {"Major", "Minor"};
 
-            Tonic = _theory.CircleOfFifths[_random.Next(0, _theory.Scale.Length)];
+            Tonic = CircleOfFifths[_random.Next(0, Scale.Length)];
             Accidental = accidentals[_random.Next(0, accidentals.Length)];
             // Prevent more than 7 sharps (no double sharps)
-            for (int i = 2; i < _theory.OrderOfSharps.Length; i++)
+            for (int i = 2; i < OrderOfSharps.Length; i++)
             {
-                if (_theory.OrderOfSharps[i] == Tonic)
+                if (OrderOfSharps[i] == Tonic)
                 {
                     Accidental = accidentals[_random.Next(1, 2)];
                     break;
@@ -35,9 +35,9 @@ namespace MusicGenerator
             // Prevent more than 7 flats (no double flats)
             if (Accidental == "b")
             {
-                for (int i = 3; i < _theory.OrderOfFlats.Length; i++)
+                for (int i = 3; i < OrderOfFlats.Length; i++)
                 {
-                    if (_theory.OrderOfFlats[i] == Tonic)
+                    if (OrderOfFlats[i] == Tonic)
                     {
                         Mode = "Major";
                         break;
@@ -50,7 +50,7 @@ namespace MusicGenerator
             if (Accidental == "#") num = 7;
             if (Accidental == "b") num = -7;
             if (Mode == "Minor") num -= 3;
-            foreach (char n in _theory.CircleOfFifths)
+            foreach (char n in CircleOfFifths)
             {
                 if (n == Tonic) break;
                 num++;

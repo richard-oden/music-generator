@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 
 namespace MusicGenerator
 {
@@ -7,17 +6,17 @@ namespace MusicGenerator
     {
         public string MenuName {get; private set;}
         public string Prompt {get; private set;}
-        public Dictionary<string, Action> Options {get; private set;}
+        public MenuSelection[] Options {get; private set;}
         public bool AllowExit {get; private set;} = true;
 
-        public Menu(string menuName, string prompt, Dictionary<string, Action> options)
+        public Menu(string menuName, string prompt, MenuSelection[] options)
         {
             MenuName = menuName;
             Prompt = prompt;
             Options = options;
         }
 
-        public Menu(string menuName, string prompt, Dictionary<string, Action> options, bool allowExit)
+        public Menu(string menuName, string prompt, MenuSelection[] options, bool allowExit)
         {
             MenuName = menuName;
             Prompt = prompt;
@@ -25,34 +24,46 @@ namespace MusicGenerator
             AllowExit = allowExit;
         }
 
+        public static void PrintBlankLine()
+        {
+            Console.WriteLine("");
+        }
+
+        public static void PrintBlankLine(int times)
+        {
+            for (int i = 0; i < times; i++) Console.WriteLine("");
+        }
+
         public void OpenMenu()
         {
-            bool breakOuterLoop = false;
             while (true)
             {
-                Console.Write("\n" + Prompt);
+                Console.Write(Prompt);
                 if (AllowExit) Console.Write(" Enter 'quit' to exit this menu.");
-                Console.WriteLine("\n");
-                foreach (var option in Options) Console.WriteLine(option.Key);
-                Console.WriteLine("");
-                string response = Console.ReadLine();
-                Console.WriteLine("");
-                foreach (var option in Options)
+                PrintBlankLine();
+                foreach (var option in Options) Console.WriteLine($"{option.Selector} - {option.Description}");
+                PrintBlankLine();
+                string input = Console.ReadLine();
+                PrintBlankLine();
+                bool validOptionSelected = false;
+                foreach (var option in Options) 
                 {
-                    if (response.ToLower()[0] == option.Key.ToLower()[0])
+                    if (option.InputMatchesSelector(input))
                     {
-                        option.Value();
-                        breakOuterLoop = true;
+                        validOptionSelected = true;
+                        option.ExecuteCallback();
                         break;
                     }
                 }
-                if (breakOuterLoop) break;
-                else if (response.ToLower() == "quit" && AllowExit)
+                if (validOptionSelected == false)
                 {
-                    Console.WriteLine($"Exiting {MenuName}...");
-                    break;
+                    if (input.ToLower() == "quit" && AllowExit)
+                    {
+                        Console.WriteLine($"Exiting {MenuName}...");
+                        break;
+                    }
+                    else Console.WriteLine($"Menu option '{input}' not found. Please enter a valid choice.");
                 }
-                else Console.WriteLine($"Menu option '{response}' not found. Please enter a valid choice.");
             }
         }
     }

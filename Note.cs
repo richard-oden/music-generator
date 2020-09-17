@@ -1,5 +1,5 @@
 using System;
-using System.Linq;
+using static MusicGenerator.Theory;
 
 namespace MusicGenerator
 {
@@ -14,20 +14,20 @@ namespace MusicGenerator
         {
             int[] octaves = {4, 5};
 
-            NoteName = _theory.CircleOfFifths[_random.Next(0, _theory.CircleOfFifths.Length)];
+            NoteName = CircleOfFifths[_random.Next(0, CircleOfFifths.Length)];
             Octave = octaves[_random.Next(0, octaves.Length)];
 
             if (keySig.TypeOfAccidental == "#")
             {
-                Accidental = Array.IndexOf(_theory.OrderOfSharps, NoteName) < keySig.NumAccidentals ? "#" : "";
+                Accidental = Array.IndexOf(OrderOfSharps, NoteName) < keySig.NumAccidentals ? "#" : "";
             }
             else
             {
-                Accidental = Array.IndexOf(_theory.OrderOfFlats, NoteName) < Math.Abs(keySig.NumAccidentals) ? "b" : "";
+                Accidental = Array.IndexOf(OrderOfFlats, NoteName) < Math.Abs(keySig.NumAccidentals) ? "b" : "";
             }
 
             // Represents position on staff (0 to 13 from top to bottom):
-            StaffLine = 13 - Array.IndexOf(_theory.Scale, NoteName);
+            StaffLine = 13 - Array.IndexOf(Scale, NoteName);
             if (Octave == 5) StaffLine -= 7;
         }
 
