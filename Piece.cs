@@ -5,20 +5,40 @@ namespace MusicGenerator
 {
     class Piece
     {
+        public string Title {get; private set;}
         private int _numMeasures = 0;
         private KeySignature _keySig;
         private TimeSignature _timeSig;
         private List<List<MeasureSegment>> _measures;
-        private static Random random = new Random();
+        private static Random _random = new Random();
         public bool hasBeenGenerated => _numMeasures != 0;
 
-        public Piece()
+        public Piece(string title, int numMeasures, KeySignature keySig, TimeSignature timeSig)
         {
+            Title = title;
+            _numMeasures = numMeasures;
+            _keySig = keySig;
+            _timeSig = timeSig;
+
+            List<List<MeasureSegment>> measures = new List<List<MeasureSegment>>();
+            int currentMeasure = 0;
+            while (currentMeasure < _numMeasures)
+            {
+                Measure newMeasure = new Measure(_keySig, _timeSig);
+                measures.Add(newMeasure.Contents);
+                currentMeasure++;
+            }
+            _measures = measures;
         }
 
-        public void GenerateRandomly(KeySignature keySig, TimeSignature timeSig)
+        public static Piece GenerateProcedurally()
         {
-            _numMeasures = random.Next(1, 16);
+            return new Piece(TitleGenerator.Generate(), _random.Next(1, 16), new KeySignature(), new TimeSignature());
+        }
+
+        public void GenerateSemiRandomly(int numMeasures, KeySignature keySig, TimeSignature timeSig)
+        {
+            _numMeasures = numMeasures;
             _keySig = keySig;
             _timeSig = timeSig;
 
@@ -33,8 +53,25 @@ namespace MusicGenerator
             _measures = measures;
         }
 
+        public void WriteManually(int numMeasures, KeySignature keySig, TimeSignature timeSig)
+        {
+            _numMeasures = numMeasures;
+            _keySig = keySig;
+            _timeSig = timeSig;
+            List<List<MeasureSegment>> measures = new List<List<MeasureSegment>>();
+            int currentMeasure = 0;
+            while (currentMeasure < _numMeasures)
+            {
+                Measure newMeasure = new Measure(keySig, timeSig);
+                measures.Add(newMeasure.Contents);
+                currentMeasure++;
+            }
+            _measures = measures;
+        }
+
         public void ListNotes()
         {
+            Console.WriteLine($"Title: {Title}");
             Console.WriteLine($"The key signature is {_keySig.Tonic}{_keySig.Accidental} {_keySig.Mode}.");
             Console.WriteLine($"The time signature is {_timeSig.NotesPerMeasure}/{_timeSig.NoteDuration}.");
             foreach (List<MeasureSegment> measure in _measures)
@@ -57,6 +94,7 @@ namespace MusicGenerator
 
         public void PrintStaff()
         {
+            Console.WriteLine($"Title: {Title}");
             Console.WriteLine($"The key signature is {_keySig.Tonic}{_keySig.Accidental} {_keySig.Mode}.");
             Console.WriteLine($"The time signature is {_timeSig.NotesPerMeasure}/{_timeSig.NoteDuration}.");
 
