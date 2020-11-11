@@ -6,6 +6,8 @@ namespace MusicGenerator
         public static char[] OrderOfSharps => new[] { 'F', 'C', 'G', 'D', 'A', 'E', 'B' };
         public static char[] OrderOfFlats => new[] { 'B', 'E', 'A', 'D', 'G', 'C', 'F' };
         public static char[] Scale => new[] { 'C', 'D', 'E', 'F', 'G', 'A', 'B' };
+        public static string[] Accidentals = {"#", "b", ""};
+        public static string[] Modes = {"Major", "Minor"};
         public static int[] TimeSigNumerators => new[] {2, 3, 4, 6};
         public static int[] TimeSigDenominators => new[] {2, 4, 8};
         public static object[][] Durations => new object[][]

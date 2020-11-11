@@ -1,5 +1,6 @@
 using System;
 using static MusicGenerator.Theory;
+using System.Linq;
 
 namespace MusicGenerator
 {
@@ -21,6 +22,30 @@ namespace MusicGenerator
         {
             NotesPerMeasure = notesPerMeasure;
             NoteDuration = noteDuration;
+        }
+
+        public static TimeSignature Parse(string input)
+        {
+            var inputArr = input.Split('/');
+            if (inputArr.Length == 2)
+            {
+                int numerator = int.Parse(inputArr[0]);
+                int denominator = int.Parse(inputArr[1]);
+                if (TimeSigNumerators.Contains(numerator) &&
+                    TimeSigDenominators.Contains(denominator))
+                {
+                    return new TimeSignature(numerator, denominator);
+                }
+                else
+                {
+                    Console.WriteLine($"One or more integers in {input} are not valid.");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"'{input}' is not a valid time signature. Must contain only 2 integers separated by a '/'. (e.g., 4/4)");
+            }
+            return null;
         }
     }
 }

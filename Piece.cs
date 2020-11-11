@@ -36,44 +36,104 @@ namespace MusicGenerator
             return new Piece(TitleGenerator.Generate(), _random.Next(1, 16), new KeySignature(), new TimeSignature());
         }
 
-        public void GenerateSemiRandomly(int numMeasures, KeySignature keySig, TimeSignature timeSig)
+        private static Dictionary<string, object> getParameters()
         {
-            _numMeasures = numMeasures;
-            _keySig = keySig;
-            _timeSig = timeSig;
+            var parameters = new Dictionary<string, object>();
+
+            bool titleFound = false;
+            while (!titleFound)
+            {
+                Console.WriteLine("Enter a title for your piece:");
+                string titleInput = Console.ReadLine();
+                if (!String.IsNullOrEmpty(titleInput))
+                {
+                    parameters.Add("title", titleInput);
+                    titleFound = true;
+                }
+                else
+                {
+                    Console.WriteLine("Title must contain at least one character.");
+                }
+            }
+
+            bool numMeasuresFound = false;
+            while (!numMeasuresFound)
+            {
+                Console.WriteLine("Enter the number of measures in your piece:");
+                string numMeasuresInput = Console.ReadLine();
+                int numMeasures;
+                if (int.TryParse(numMeasuresInput, out numMeasures))
+                {
+                    parameters.Add("measures", numMeasures);
+                    numMeasuresFound = true;
+                }
+                else
+                {
+                    Console.WriteLine("Input must be an integer.");
+                }
+            }
+            
+            bool keySigFound = false;
+            while (!keySigFound)
+            {
+                Console.WriteLine("Enter a key signature (e.g., C minor, F# Major, Ab minor, etc):");
+                string keySigInput = Console.ReadLine();
+                var newKeySig = KeySignature.Parse(keySigInput);
+                if (newKeySig != null) 
+                {
+                    parameters.Add("key", newKeySig);
+                    keySigFound = true;
+                }
+            }
+
+            bool timeSigFound = false;
+            while (!timeSigFound)
+            {
+                Console.WriteLine("Enter a time signature for your piece (e.g., 2/4, 6/8, etc):");
+                string timeSigInput = Console.ReadLine();
+                var newTimeSig = TimeSignature.Parse(timeSigInput);
+                if (newTimeSig != null) 
+                {
+                    parameters.Add("time", newTimeSig);
+                    timeSigFound = true;
+                }
+            }
+
+            return parameters;
+        }
+
+        public static Piece GenerateProcedurallyWithParameters()
+        {
+            Dictionary<string, object> parameters = getParameters();
+            return new Piece((string)parameters["title"], (int)parameters["measures"],
+                (KeySignature)parameters["key"], (TimeSignature)parameters["time"]);
+        }
+
+        public void GenerateManually()
+        {
+            Dictionary<string, object> parameters = getParameters();
+            var numMeasures = (int)parameters["measures"];
+            var keySig = (KeySignature)parameters["key"];
+            var timeSig = (TimeSignature)parameters["time"];
 
             List<List<MeasureSegment>> measures = new List<List<MeasureSegment>>();
             int currentMeasure = 0;
-            while (currentMeasure < _numMeasures)
+            while (currentMeasure < numMeasures)
             {
-                Measure newMeasure = new Measure(keySig, timeSig);
-                measures.Add(newMeasure.Contents);
-                currentMeasure++;
+                // Print incomplete staff, allow user to move up/down with arrow keys to add segment
             }
             _measures = measures;
         }
 
-        public void WriteManually(int numMeasures, KeySignature keySig, TimeSignature timeSig)
-        {
-            _numMeasures = numMeasures;
-            _keySig = keySig;
-            _timeSig = timeSig;
-            List<List<MeasureSegment>> measures = new List<List<MeasureSegment>>();
-            int currentMeasure = 0;
-            while (currentMeasure < _numMeasures)
-            {
-                Measure newMeasure = new Measure(keySig, timeSig);
-                measures.Add(newMeasure.Contents);
-                currentMeasure++;
-            }
-            _measures = measures;
-        }
-
-        public void ListNotes()
+        public void PrintInfo()
         {
             Console.WriteLine($"Title: {Title}");
             Console.WriteLine($"The key signature is {_keySig.Tonic}{_keySig.Accidental} {_keySig.Mode}.");
             Console.WriteLine($"The time signature is {_timeSig.NotesPerMeasure}/{_timeSig.NoteDuration}.");
+        }
+        
+        public void ListNotes()
+        {
             foreach (List<MeasureSegment> measure in _measures)
 	        {
                 Console.WriteLine($"\nMeasure {_measures.IndexOf(measure) + 1}:");
@@ -94,10 +154,6 @@ namespace MusicGenerator
 
         public void PrintStaff()
         {
-            Console.WriteLine($"Title: {Title}");
-            Console.WriteLine($"The key signature is {_keySig.Tonic}{_keySig.Accidental} {_keySig.Mode}.");
-            Console.WriteLine($"The time signature is {_timeSig.NotesPerMeasure}/{_timeSig.NoteDuration}.");
-
             string[] finalStaff = new string[14];
 
             string[] trebleClef = {

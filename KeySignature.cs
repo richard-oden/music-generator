@@ -1,5 +1,6 @@
 using System;
 using static MusicGenerator.Theory;
+using System.Linq;
 
 namespace MusicGenerator
 {
@@ -16,22 +17,19 @@ namespace MusicGenerator
         // Generates randomly:
         public KeySignature() 
         {   
-            string[] accidentals = {"#", "b", ""};
-            string[] modes = {"Major", "Minor"};
-
             Tonic = CircleOfFifths[_random.Next(0, Scale.Length)];
-            Accidental = accidentals[_random.Next(0, accidentals.Length)];
+            Accidental = Accidentals[_random.Next(0, Accidentals.Length)];
             // Prevent more than 7 sharps (no double sharps)
             for (int i = 2; i < OrderOfSharps.Length; i++)
             {
                 if (OrderOfSharps[i] == Tonic)
                 {
-                    Accidental = accidentals[_random.Next(1, 2)];
+                    Accidental = Accidentals[_random.Next(1, 2)];
                     break;
                 }
             }
 
-            Mode = modes[_random.Next(0, modes.Length)];
+            Mode = Modes[_random.Next(0, Modes.Length)];
             // Prevent more than 7 flats (no double flats)
             if (Accidental == "b")
             {
@@ -63,6 +61,36 @@ namespace MusicGenerator
             Tonic = tonic;
             Accidental = accidental;
             Mode = mode;
+        }
+
+        public static KeySignature Parse(string input)
+        {
+            var inputArr = input.Split(' ');
+            var tonicAndAccidentalArr = inputArr[0].ToCharArray();
+            
+            if (inputArr.Length == 2 && 
+                (tonicAndAccidentalArr.Length == 2 ||
+                tonicAndAccidentalArr.Length == 1))
+            {
+                var tonic = tonicAndAccidentalArr[0];
+                var accidental = tonicAndAccidentalArr.Length == 2 ? tonicAndAccidentalArr[1].ToString() : "";
+                var mode = inputArr[1];
+
+                if (Scale.Contains(tonic) && Accidentals.Contains(accidental) && 
+                    Modes.Contains(mode.ToLower().FirstCharToUpper()))
+                {
+                    return new KeySignature(tonic, accidental, mode);
+                }
+                else
+                {
+                    Console.WriteLine($"One or more parts of '{input}' are not valid.");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"'{input}' is not a valid key signature. Must contain a tonic and mode separated by a space. (e.g., Bb Major)");
+            }
+            return null;
         }
     }
 }

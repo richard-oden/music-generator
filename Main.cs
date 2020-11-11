@@ -32,12 +32,16 @@ namespace MusicGenerator
                     switch (parsedInput)
                     {
                         case 1:
-                            var newPiece = Piece.GenerateProcedurally();
-                            newPiece.PrintStaff();
+                            var proceduralPiece = Piece.GenerateProcedurally();
+                            proceduralPiece.PrintInfo();
+                            proceduralPiece.PrintStaff();
                             Console.ReadLine();
                             break;
                         case 2:
-
+                            var semiProceduralPiece = Piece.GenerateProcedurallyWithParameters();
+                            semiProceduralPiece.PrintInfo();
+                            semiProceduralPiece.PrintStaff();
+                            Console.ReadLine();
                             break;
                         case 3:
 
