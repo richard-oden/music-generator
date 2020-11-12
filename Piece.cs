@@ -123,26 +123,57 @@ namespace MusicGenerator
         public static void GenerateManually()
         {
             Dictionary<string, object> parameters = getParameters();
+            Console.Clear();
             var numMeasures = (int)parameters["measures"];
 
             var measures = new List<Measure>();
             int currentMeasureNum = 0;
             int cursorPosition = 7;
+            bool measureDeleted = false;
             
             while (currentMeasureNum < numMeasures)
             {
+                // Recreate piece each time a measure is added or deleted:
                 var tempPiece = new Piece((string)parameters["title"], currentMeasureNum,
                     (KeySignature)parameters["key"], (TimeSignature)parameters["time"], measures);
-                tempPiece._measures.Add(new Measure(tempPiece._keySig, tempPiece._timeSig, new List<MeasureSegment>()));
-
-                while (tempPiece._measures[currentMeasureNum].CurrentLength < tempPiece._measures[currentMeasureNum].MeasureLength)
+                // If measure was deleted, do not add a new measure (instead revisit previous measure):
+                if (measureDeleted == false) tempPiece._measures.Add(new Measure(tempPiece._keySig, tempPiece._timeSig, new List<MeasureSegment>()));
+                // Create reference of current measure:
+                var tempMeasure = tempPiece._measures[currentMeasureNum];
+                // Reset measure deleted bool:
+                measureDeleted = false;
+                while (tempMeasure.CurrentLength < tempMeasure.MeasureLength && !measureDeleted)
                 {
                     tempPiece.PrintStaff(cursorPosition);
+                    Console.WriteLine("\nUse up/down arrow keys to select staff line, press enter to add a note/rest and backspace to delete previous note/rest.");
                     var cursorInput = Console.ReadKey();
+                    // Up and down arrows move cursor so that a different line is selected:
                     if (cursorInput.Key == ConsoleKey.UpArrow) cursorPosition -= 1;
                     else if (cursorInput.Key == ConsoleKey.DownArrow) cursorPosition += 1;
-                    else if (cursorInput.Key == ConsoleKey.Enter) tempPiece._measures[currentMeasureNum].Append(cursorPosition);
-                    else if (cursorInput.Key == ConsoleKey.Backspace) tempPiece._measures[currentMeasureNum].Unappend();
+                    else if (cursorInput.Key == ConsoleKey.Enter) tempMeasure.Append(cursorPosition);
+                    else if (cursorInput.Key == ConsoleKey.Backspace) 
+                    {
+                        if (tempMeasure.Contents.Count > 0)
+                        {
+                            tempMeasure.Unappend();
+                        }
+                        // If this is empty and it is the first measure, warn user:
+                        else if (currentMeasureNum == 0)
+                        {
+                            Console.WriteLine("There is nothing left to delete!");
+                            Console.ReadKey();
+                        }
+                        // If this is empty and it is NOT the first measure, unappend from previous 
+                        // and change current measure number to previous:
+                        else
+                        {
+                            tempPiece._measures.RemoveAt(tempPiece._measures.Count - 1);
+                            tempPiece._measures[currentMeasureNum - 1].Unappend();
+                            // subtract two, because current measure number will be incremented at end of loop:
+                            currentMeasureNum -= 2;
+                            measureDeleted = true;
+                        }
+                    }
                     Console.Clear();
                 }
                 currentMeasureNum++;
@@ -258,7 +289,7 @@ namespace MusicGenerator
                 if (i == cursorPosition)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
-                    Console.Write('\u25A0');
+                    Console.Write('<');
                     Console.ResetColor();
                 }
                 Console.Write('\n');

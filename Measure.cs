@@ -16,7 +16,7 @@ namespace MusicGenerator
         {
             _keySig = keySig;
             _timeSig = timeSig;
-            List<MeasureSegment> contents = new List<MeasureSegment>();
+            Contents = new List<MeasureSegment>();
             while (CurrentLength < MeasureLength) 
             {
                 var newAddition = new MeasureSegment();
@@ -31,10 +31,9 @@ namespace MusicGenerator
 
                 if (newAddition.Duration + CurrentLength <= MeasureLength)
                 {
-                    contents.Add(newAddition);
+                    Contents.Add(newAddition);
                 }
             }
-            Contents = contents;
         }
 
         public Measure(KeySignature keySig, TimeSignature timeSig, List<MeasureSegment> contents)
@@ -45,11 +44,12 @@ namespace MusicGenerator
         }
         public void Append(int line)
         {
+            Console.WriteLine("\nEnter the symbol for the note/rest you'd like to add:");
             string symbolInput = Console.ReadLine();
             var rhythmInfo = Theory.RhythmInfos.SingleOrDefault(rI => (string)rI[1] == symbolInput.ToUpper());
             if (rhythmInfo != null && (double)rhythmInfo[2] + CurrentLength <= MeasureLength)
             {
-                if (symbolInput.ToCharArray().All(c => char.IsUpper(c)))
+                if (char.IsUpper(symbolInput.ToCharArray()[0]))
                 {
                     Contents.Add(new Note(_keySig, line, symbolInput));
                 }
