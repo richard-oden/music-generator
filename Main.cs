@@ -8,7 +8,7 @@ namespace MusicGenerator
         public static void Main()
         {
             
-            Console.WriteLine("Welcome to the...");
+            Console.WriteLine("------- Welcome to the -------");
             Console.WriteLine("==============================");
             Console.WriteLine("==== MUSIC GENERATOR 5000 ====");
             Console.WriteLine("==============================");
@@ -26,8 +26,8 @@ namespace MusicGenerator
                 
                 int parsedInput;
                 string userInput = Console.ReadLine();
-                bool success = int.TryParse(userInput, out parsedInput);
-                if (success)
+                bool validInput = int.TryParse(userInput, out parsedInput);
+                if (validInput)
                 {
                     switch (parsedInput)
                     {
@@ -44,7 +44,7 @@ namespace MusicGenerator
                             Console.ReadLine();
                             break;
                         case 3:
-
+                            Piece.GenerateManually();
                             break;
                         case 4:
 

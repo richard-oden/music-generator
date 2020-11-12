@@ -72,7 +72,7 @@ namespace MusicGenerator
                 (tonicAndAccidentalArr.Length == 2 ||
                 tonicAndAccidentalArr.Length == 1))
             {
-                var tonic = tonicAndAccidentalArr[0];
+                var tonic = char.ToUpper(tonicAndAccidentalArr[0]);
                 var accidental = tonicAndAccidentalArr.Length == 2 ? tonicAndAccidentalArr[1].ToString() : "";
                 var mode = inputArr[1];
 

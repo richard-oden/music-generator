@@ -17,6 +17,33 @@ namespace MusicGenerator
             NoteName = CircleOfFifths[_random.Next(0, CircleOfFifths.Length)];
             Octave = octaves[_random.Next(0, octaves.Length)];
 
+            applyKeySignature(keySig);
+
+            // Represents position on staff (0 to 13 from top to bottom):
+            StaffLine = 13 - Array.IndexOf(Scale, NoteName);
+            if (Octave == 5) StaffLine -= 7;
+        }
+
+        //Generates with given values:
+        public Note(KeySignature keySig, int staffLine, string staffSymbol) : base(staffSymbol)
+        {
+            StaffLine = staffLine;
+            int scaleIndex = 13 - staffLine;
+            if (scaleIndex >= 7)
+            {
+                scaleIndex -= 7;
+                Octave = 5;
+            }
+            else
+            {
+                Octave = 4;
+            }
+            NoteName = Scale[scaleIndex];
+            applyKeySignature(keySig);
+        }
+
+        private void applyKeySignature(KeySignature keySig)
+        {
             if (keySig.TypeOfAccidental == "#")
             {
                 Accidental = Array.IndexOf(OrderOfSharps, NoteName) < keySig.NumAccidentals ? "#" : "";
@@ -25,19 +52,6 @@ namespace MusicGenerator
             {
                 Accidental = Array.IndexOf(OrderOfFlats, NoteName) < Math.Abs(keySig.NumAccidentals) ? "b" : "";
             }
-
-            // Represents position on staff (0 to 13 from top to bottom):
-            StaffLine = 13 - Array.IndexOf(Scale, NoteName);
-            if (Octave == 5) StaffLine -= 7;
         }
-
-        // Generates with given values:
-        // public Note(char noteName, string accidental, int octave, double duration)
-        // {
-        //     NoteName = noteName;
-        //     Accidental = accidental;
-        //     Octave = octave;
-        //     Duration = duration;
-        // }
     }
 }

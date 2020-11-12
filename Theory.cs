@@ -10,7 +10,7 @@ namespace MusicGenerator
         public static string[] Modes = {"Major", "Minor"};
         public static int[] TimeSigNumerators => new[] {2, 3, 4, 6};
         public static int[] TimeSigDenominators => new[] {2, 4, 8};
-        public static object[][] Durations => new object[][]
+        public static object[][] RhythmInfos => new object[][]
         {
             new object[] {"1/16th note", "S", 0.0625},
             new object[] {"1/8th note", "E", 0.125},

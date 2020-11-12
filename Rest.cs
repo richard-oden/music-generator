@@ -10,5 +10,12 @@ namespace MusicGenerator
             RhythmicValue += " rest";
             StaffSymbol = StaffSymbol.ToLower();
         }
+
+        public Rest(string staffSymbol) : base(staffSymbol)
+        {
+            StaffLine = 7;
+            RhythmicValue += " rest";
+            StaffSymbol = staffSymbol.ToLower();
+        }
     }
 }

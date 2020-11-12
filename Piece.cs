@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using static MusicGenerator.Theory;
 
 namespace MusicGenerator
 {
@@ -9,7 +11,7 @@ namespace MusicGenerator
         private int _numMeasures = 0;
         private KeySignature _keySig;
         private TimeSignature _timeSig;
-        private List<List<MeasureSegment>> _measures;
+        private List<Measure> _measures;
         private static Random _random = new Random();
         public bool hasBeenGenerated => _numMeasures != 0;
 
@@ -20,14 +22,23 @@ namespace MusicGenerator
             _keySig = keySig;
             _timeSig = timeSig;
 
-            List<List<MeasureSegment>> measures = new List<List<MeasureSegment>>();
+            var measures = new List<Measure>();
             int currentMeasure = 0;
             while (currentMeasure < _numMeasures)
             {
                 Measure newMeasure = new Measure(_keySig, _timeSig);
-                measures.Add(newMeasure.Contents);
+                measures.Add(newMeasure);
                 currentMeasure++;
             }
+            _measures = measures;
+        }
+
+        public Piece(string title, int numMeasures, KeySignature keySig, TimeSignature timeSig, List<Measure> measures)
+        {
+            Title = title;
+            _numMeasures = numMeasures;
+            _keySig = keySig;
+            _timeSig = timeSig;
             _measures = measures;
         }
 
@@ -109,21 +120,35 @@ namespace MusicGenerator
                 (KeySignature)parameters["key"], (TimeSignature)parameters["time"]);
         }
 
-        public void GenerateManually()
+        public static void GenerateManually()
         {
             Dictionary<string, object> parameters = getParameters();
             var numMeasures = (int)parameters["measures"];
-            var keySig = (KeySignature)parameters["key"];
-            var timeSig = (TimeSignature)parameters["time"];
 
-            List<List<MeasureSegment>> measures = new List<List<MeasureSegment>>();
-            int currentMeasure = 0;
-            while (currentMeasure < numMeasures)
+            var measures = new List<Measure>();
+            int currentMeasureNum = 0;
+            int cursorPosition = 7;
+            
+            while (currentMeasureNum < numMeasures)
             {
-                // Print incomplete staff, allow user to move up/down with arrow keys to add segment
+                var tempPiece = new Piece((string)parameters["title"], currentMeasureNum,
+                    (KeySignature)parameters["key"], (TimeSignature)parameters["time"], measures);
+                tempPiece._measures.Add(new Measure(tempPiece._keySig, tempPiece._timeSig, new List<MeasureSegment>()));
+
+                while (tempPiece._measures[currentMeasureNum].CurrentLength < tempPiece._measures[currentMeasureNum].MeasureLength)
+                {
+                    tempPiece.PrintStaff(cursorPosition);
+                    var cursorInput = Console.ReadKey();
+                    if (cursorInput.Key == ConsoleKey.UpArrow) cursorPosition -= 1;
+                    else if (cursorInput.Key == ConsoleKey.DownArrow) cursorPosition += 1;
+                    else if (cursorInput.Key == ConsoleKey.Enter) tempPiece._measures[currentMeasureNum].Append(cursorPosition);
+                    else if (cursorInput.Key == ConsoleKey.Backspace) tempPiece._measures[currentMeasureNum].Unappend();
+                    Console.Clear();
+                }
+                currentMeasureNum++;
             }
-            _measures = measures;
         }
+
 
         public void PrintInfo()
         {
@@ -134,11 +159,11 @@ namespace MusicGenerator
         
         public void ListNotes()
         {
-            foreach (List<MeasureSegment> measure in _measures)
+            foreach (Measure measure in _measures)
 	        {
                 Console.WriteLine($"\nMeasure {_measures.IndexOf(measure) + 1}:");
                 string text = "";
-                foreach (var measureSegment in measure)
+                foreach (var measureSegment in measure.Contents)
 	            {
                     if (measureSegment is Note) 
                     {
@@ -146,13 +171,13 @@ namespace MusicGenerator
                         text += $"{note.NoteName}{note.Accidental}{note.Octave} ";
                     }
                     text += measureSegment.RhythmicValue;
-                    text += measure.IndexOf(measureSegment) == measure.Count - 1 ? "." : ", ";
+                    text += measure.Contents.IndexOf(measureSegment) == measure.Contents.Count - 1 ? "." : ", ";
 	            }
                 Console.WriteLine(text);
 	        }
         }
 
-        public void PrintStaff()
+        public void PrintStaff(int cursorPosition = -1)
         {
             string[] finalStaff = new string[14];
 
@@ -173,9 +198,9 @@ namespace MusicGenerator
                 "    (_|    "
             };
 
-            int[] accidentalIndices = _keySig.TypeOfAccidental == "#" ? new[] {3, 6, 2, 5, 8, 4, 7} : new int[] {7, 4, 8, 5, 9, 6, 10};
-            // int[] sharpIndices = {2, 5, 1, 4, 7, 3, 6};
-            // int[] flatIndices = {7, 4, 8, 5, 9, 6, 10};
+            int[] accidentalIndices = _keySig.TypeOfAccidental == "#" ? 
+                new[] {3, 6, 2, 5, 8, 4, 7} : 
+                new int[] {7, 4, 8, 5, 9, 6, 10};
            
             for (int i = 0; i < 14; i++)
             {
@@ -197,6 +222,7 @@ namespace MusicGenerator
 
                 finalStaff[i] += spaceOrLine;
 
+                // Print time signature line:
                 if (i == 6)
                 {
                     finalStaff[i] += _timeSig.NotesPerMeasure;
@@ -213,9 +239,9 @@ namespace MusicGenerator
                 finalStaff[i] += spaceOrLine;
 
                 // Print measure line:
-                foreach (List<MeasureSegment> measure in _measures)
+                foreach (Measure measure in _measures)
                 {
-                    foreach (var measureSegment in measure)
+                    foreach (var measureSegment in measure.Contents)
                     {
                         string measureLineSegment = "";
                         if (measureSegment.StaffLine == i) measureLineSegment += measureSegment.StaffSymbol;
@@ -228,7 +254,14 @@ namespace MusicGenerator
                     //Bar line:
                     finalStaff[i] += (i < 12 && i > 2) ? "|" : " ";
                 }
-                Console.WriteLine(finalStaff[i]);
+                Console.Write(finalStaff[i]);
+                if (i == cursorPosition)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.Write('\u25A0');
+                    Console.ResetColor();
+                }
+                Console.Write('\n');
             }
         }
     }
