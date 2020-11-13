@@ -120,6 +120,24 @@ namespace MusicGenerator
                 (KeySignature)parameters["key"], (TimeSignature)parameters["time"]);
         }
 
+        private static void printInstructions(bool show)
+        {
+            if (show)
+            {
+                Console.WriteLine("INSTRUCTIONS:");
+                Console.WriteLine("- UP/DOWN arrows to move cursor");
+                Console.WriteLine("- ENTER to add new rest/note");
+                Console.WriteLine("- BACKSPACE to delete previous rest/note");
+                Console.WriteLine("- I to toggle instructions");
+                Console.WriteLine("- D to toggle piece description");
+                Console.WriteLine("- S to save piece");
+                Console.WriteLine("- ESC to exit to main menu");
+            }
+            else
+            {
+                Console.WriteLine("Press 'I' to show instructions.");
+            }
+        }
         public static void GenerateManually()
         {
             Dictionary<string, object> parameters = getParameters();
@@ -131,7 +149,10 @@ namespace MusicGenerator
             int cursorPosition = 7;
             bool measureDeleted = false;
             
-            while (currentMeasureNum < numMeasures)
+            bool showInstructions = true;
+            bool showDescription = false;
+            bool stillEditing = true;
+            while (currentMeasureNum < numMeasures && stillEditing)
             {
                 // Recreate piece each time a measure is added or deleted:
                 var tempPiece = new Piece((string)parameters["title"], currentMeasureNum,
@@ -142,10 +163,15 @@ namespace MusicGenerator
                 var tempMeasure = tempPiece._measures[currentMeasureNum];
                 // Reset measure deleted bool:
                 measureDeleted = false;
-                while (tempMeasure.CurrentLength < tempMeasure.MeasureLength && !measureDeleted)
+                while (tempMeasure.CurrentLength < tempMeasure.MeasureLength && !measureDeleted && stillEditing)
                 {
+                    if (showDescription)
+                    {
+                        tempPiece.PrintInfo();
+                        tempPiece.ListNotes();
+                    }
                     tempPiece.PrintStaff(cursorPosition);
-                    Console.WriteLine("\nUse up/down arrow keys to select staff line, press enter to add a note/rest and backspace to delete previous note/rest.");
+                    printInstructions(showInstructions);
                     var cursorInput = Console.ReadKey();
                     // Up and down arrows move cursor so that a different line is selected:
                     if (cursorInput.Key == ConsoleKey.UpArrow) cursorPosition -= 1;
@@ -163,8 +189,8 @@ namespace MusicGenerator
                             Console.WriteLine("There is nothing left to delete!");
                             Console.ReadKey();
                         }
-                        // If this is empty and it is NOT the first measure, unappend from previous 
-                        // and change current measure number to previous:
+                        // If this is empty and it is NOT the first measure, unappend from previous, 
+                        // delete this measure, and change current measure number to previous:
                         else
                         {
                             tempPiece._measures.RemoveAt(tempPiece._measures.Count - 1);
@@ -174,6 +200,9 @@ namespace MusicGenerator
                             measureDeleted = true;
                         }
                     }
+                    else if (cursorInput.Key == ConsoleKey.I) showInstructions = !showInstructions;
+                    else if (cursorInput.Key == ConsoleKey.D) showDescription = !showDescription;
+                    else if (cursorInput.Key == ConsoleKey.Escape) stillEditing = false;
                     Console.Clear();
                 }
                 currentMeasureNum++;
@@ -231,7 +260,7 @@ namespace MusicGenerator
 
             int[] accidentalIndices = _keySig.TypeOfAccidental == "#" ? 
                 new[] {3, 6, 2, 5, 8, 4, 7} : 
-                new int[] {7, 4, 8, 5, 9, 6, 10};
+                new[] {7, 4, 8, 5, 9, 6, 10};
            
             for (int i = 0; i < 14; i++)
             {

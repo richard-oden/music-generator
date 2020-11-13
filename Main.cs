@@ -8,7 +8,7 @@ namespace MusicGenerator
         public static void Main()
         {
             
-            Console.WriteLine("------- Welcome to the -------");
+            Console.WriteLine("------- Welcome to The -------");
             Console.WriteLine("==============================");
             Console.WriteLine("==== MUSIC GENERATOR 5000 ====");
             Console.WriteLine("==============================");

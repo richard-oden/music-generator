@@ -7,53 +7,54 @@ namespace MusicGenerator
     class KeySignature
     {
         public char Tonic {get; private set;}
-        public string Accidental {get; private set;}
+        public string Accidental {get; private set;} // Accidental present in key signature name
         public string Mode {get; private set;}
         // Returns number of flats or sharps (flats are negative, sharps are positive):
-        public int NumAccidentals {get; private set;}
-        public string TypeOfAccidental => NumAccidentals > 0 ? "#" : "b";
+        public int NumAccidentals
+        {
+            get
+            {
+                int num = 0;
+                if (Accidental == "#") num = Tonic == 'F' ? 0 : 7;
+                if (Accidental == "b") num = -7;
+                if (Mode == "Minor") num -= 3;
+                foreach (char n in CircleOfFifths)
+                {
+                    if (n == Tonic) break;
+                    num++;
+                }
+                return num;
+            }
+        }
+        public string TypeOfAccidental => NumAccidentals > 0 ? "#" : "b"; // Accidental applied to notes
         private static readonly Random _random = new Random();
 
         // Generates randomly:
         public KeySignature() 
         {   
-            Tonic = CircleOfFifths[_random.Next(0, Scale.Length)];
             Accidental = Accidentals[_random.Next(0, Accidentals.Length)];
-            // Prevent more than 7 sharps (no double sharps)
-            for (int i = 2; i < OrderOfSharps.Length; i++)
+            // If sharp is in name, tonic cannot be further in circle of fifths than E or there will be double sharps:
+            char tempTonic;
+            do
             {
-                if (OrderOfSharps[i] == Tonic)
-                {
-                    Accidental = Accidentals[_random.Next(1, 2)];
-                    break;
-                }
-            }
-
-            Mode = Modes[_random.Next(0, Modes.Length)];
-            // Prevent more than 7 flats (no double flats)
-            if (Accidental == "b")
-            {
-                for (int i = 3; i < OrderOfFlats.Length; i++)
-                {
-                    if (OrderOfFlats[i] == Tonic)
-                    {
-                        Mode = "Major";
-                        break;
-                    }
-                }
-            }
+                tempTonic = CircleOfFifths[_random.Next(0, Scale.Length)];
+            } while (Array.IndexOf(OrderOfSharps, tempTonic) > 4 && Accidental == "#");
+            Tonic = tempTonic;
             
-            // Get nomber of accidentals:
-            int num = 0;
-            if (Accidental == "#") num = 7;
-            if (Accidental == "b") num = -7;
-            if (Mode == "Minor") num -= 3;
-            foreach (char n in CircleOfFifths)
+            // Prevent more than 7 sharps (no double sharps)
+            if (Array.IndexOf(OrderOfSharps, Tonic) > 1 && Accidental == "#")
             {
-                if (n == Tonic) break;
-                num++;
+                Mode = "Minor";
             }
-            NumAccidentals = num;
+            // Prevent more than 7 flats (no double flats)
+            else if (Array.IndexOf(OrderOfFlats, Tonic) > 2 && Accidental == "b")
+            {
+                Mode = "Major";
+            }
+            else
+            {
+                Mode = Modes[_random.Next(0, Modes.Length)];
+            }
         }
         // Generates with given values:
         public KeySignature(char tonic, string accidental, string mode)
@@ -74,10 +75,10 @@ namespace MusicGenerator
             {
                 var tonic = char.ToUpper(tonicAndAccidentalArr[0]);
                 var accidental = tonicAndAccidentalArr.Length == 2 ? tonicAndAccidentalArr[1].ToString() : "";
-                var mode = inputArr[1];
+                var mode = inputArr[1].ToLower().FirstCharToUpper();
 
                 if (Scale.Contains(tonic) && Accidentals.Contains(accidental) && 
-                    Modes.Contains(mode.ToLower().FirstCharToUpper()))
+                    Modes.Contains(mode))
                 {
                     return new KeySignature(tonic, accidental, mode);
                 }
