@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace MusicGenerator
 {
-    class TimeSignature
+    public class TimeSignature
     {
         public int NotesPerMeasure {get; private set;}
         public int NoteDuration {get; private set;}

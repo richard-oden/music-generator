@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace MusicGenerator
 {
-    class KeySignature
+    public class KeySignature
     {
         public char Tonic {get; private set;}
         public string Accidental {get; private set;} // Accidental present in key signature name

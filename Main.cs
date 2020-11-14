@@ -26,6 +26,8 @@ namespace MusicGenerator
                 
                 int parsedInput;
                 string userInput = Console.ReadLine();
+                Console.Clear();
+                
                 bool validInput = int.TryParse(userInput, out parsedInput);
                 if (validInput)
                 {
@@ -34,13 +36,15 @@ namespace MusicGenerator
                         case 1:
                             var proceduralPiece = Piece.GenerateProcedurally();
                             proceduralPiece.PrintInfo();
-                            proceduralPiece.PrintStaff();
+                            var pPrinter = new StaffPrinter(proceduralPiece);
+                            pPrinter.Print();
                             Console.ReadLine();
                             break;
                         case 2:
                             var semiProceduralPiece = Piece.GenerateProcedurallyWithParameters();
                             semiProceduralPiece.PrintInfo();
-                            semiProceduralPiece.PrintStaff();
+                            var spPrinter = new StaffPrinter(semiProceduralPiece);
+                            spPrinter.Print();
                             Console.ReadLine();
                             break;
                         case 3:

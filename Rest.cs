@@ -2,7 +2,7 @@ using System;
 
 namespace MusicGenerator
 {
-    class Rest : MeasureSegment
+    public class Rest : MeasureSegment
     {
         public Rest() : base()
         {

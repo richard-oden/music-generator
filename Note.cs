@@ -3,7 +3,7 @@ using static MusicGenerator.Theory;
 
 namespace MusicGenerator
 {
-    class Note : MeasureSegment
+    public class Note : MeasureSegment
     {
         public char NoteName {get; private set;}
         public string Accidental {get; private set;}

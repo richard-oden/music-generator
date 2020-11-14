@@ -1,6 +1,6 @@
 namespace MusicGenerator
 {
-    static class Theory
+    public static class Theory
     {
         public static char[] CircleOfFifths => new[] { 'C', 'G', 'D', 'A', 'E', 'B', 'F' };
         public static char[] OrderOfSharps => new[] { 'F', 'C', 'G', 'D', 'A', 'E', 'B' };

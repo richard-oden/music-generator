@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace MusicGenerator
 {
-    class Measure
+    public class Measure
     {
         private KeySignature _keySig;
         private TimeSignature _timeSig;

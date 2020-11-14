@@ -4,7 +4,7 @@ using static MusicGenerator.Theory;
 
 namespace MusicGenerator
 {
-    class MeasureSegment
+    public class MeasureSegment
     {
         public int StaffLine {get; set;}
         public double Duration {get; protected set;}
