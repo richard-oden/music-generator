@@ -31,27 +31,21 @@ namespace MusicGenerator
                 bool validInput = int.TryParse(userInput, out parsedInput);
                 if (validInput)
                 {
+                    Piece newPiece = null;
+                    Piece loadedPiece = null;
                     switch (parsedInput)
                     {
                         case 1:
-                            var proceduralPiece = Piece.GenerateProcedurally();
-                            proceduralPiece.PrintInfo();
-                            var pPrinter = new StaffPrinter(proceduralPiece);
-                            pPrinter.Print();
-                            Console.ReadLine();
+                            newPiece = Piece.GenerateProcedurally();
                             break;
                         case 2:
-                            var semiProceduralPiece = Piece.GenerateProcedurallyWithParameters();
-                            semiProceduralPiece.PrintInfo();
-                            var spPrinter = new StaffPrinter(semiProceduralPiece);
-                            spPrinter.Print();
-                            Console.ReadLine();
+                            newPiece = Piece.GenerateProcedurallyWithParameters();
                             break;
                         case 3:
-                            Piece.GenerateManually();
+                            newPiece = Piece.GenerateManually();
                             break;
                         case 4:
-
+                            loadedPiece = Piece.LoadFromJson("That Sonata");
                             break;
                         case 5:
                             Console.WriteLine("Goodbye!");
@@ -60,6 +54,37 @@ namespace MusicGenerator
                         default:
 
                             break; 
+                    }
+                    if (newPiece != null)
+                    {
+                        newPiece.PrintInfo();
+                        var printer = new StaffPrinter(newPiece);
+                        printer.Print();
+                        Console.WriteLine($"Would you like to save {newPiece.Title}? (Y/N)");
+                        bool awaitingSaveInput = true;
+                        while (awaitingSaveInput)
+                        {
+                            var saveInput = Console.ReadKey();
+                            if (saveInput.Key == ConsoleKey.Y)
+                            {
+                                newPiece.SaveToJson();
+                                awaitingSaveInput = false;
+                            }
+                            else if (saveInput.Key == ConsoleKey.N)
+                            {
+                                // Discard
+                                awaitingSaveInput = false;
+                            }
+                        }
+                        newPiece = null;
+                    }
+                    else if (loadedPiece != null)
+                    {
+                        Console.WriteLine($"{loadedPiece.Title} was successfully loaded!");
+                        loadedPiece.PrintInfo();
+                        var printer = new StaffPrinter(loadedPiece);
+                        printer.Print();
+                        Console.ReadKey();
                     }
                 }
                 else

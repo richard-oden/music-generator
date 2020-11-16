@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using static MusicGenerator.Theory;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.IO;
 
 namespace MusicGenerator
 {
@@ -13,6 +15,7 @@ namespace MusicGenerator
         public TimeSignature TimeSig {get; private set;}
         public List<Measure> Measures {get; private set;}
         private static Random _random = new Random();
+        
         public Piece(string title, int numMeasures, KeySignature keySig, TimeSignature timeSig)
         {
             Title = title;
@@ -136,7 +139,7 @@ namespace MusicGenerator
                 Console.WriteLine("Press 'I' to show instructions.");
             }
         }
-        public static void GenerateManually()
+        public static Piece GenerateManually()
         {
             Dictionary<string, object> parameters = getParameters();
             Console.Clear();
@@ -151,11 +154,13 @@ namespace MusicGenerator
             bool showDescription = false;
             bool stillEditing = true;
 
+            Piece tempPiece = new Piece((string)parameters["title"], currentMeasureNum,
+                (KeySignature)parameters["key"], (TimeSignature)parameters["time"], measures);
             
             while (currentMeasureNum < numMeasures && stillEditing)
             {
                 // Recreate piece each time a measure is added or deleted:
-                var tempPiece = new Piece((string)parameters["title"], currentMeasureNum,
+                tempPiece = new Piece((string)parameters["title"], currentMeasureNum,
                     (KeySignature)parameters["key"], (TimeSignature)parameters["time"], measures);
                 // If measure was deleted, do not add a new measure (instead revisit previous measure):
                 if (measureDeleted == false) tempPiece.Measures.Add(new Measure(tempPiece.KeySig, tempPiece.TimeSig, new List<MeasureSegment>()));
@@ -208,25 +213,32 @@ namespace MusicGenerator
                 }
                 currentMeasureNum++;
             }
-            Console.WriteLine($"Would you like to save {(string)parameters["title"]}? (Y/N)");
-            bool awaitingSaveInput = true;
-            while (awaitingSaveInput)
-            {
-                var saveInput = Console.ReadKey();
-                if (saveInput.Key == ConsoleKey.Y)
-                {
-                    // Save as JSON
-                    awaitingSaveInput = false;
-                }
-                else if (saveInput.Key == ConsoleKey.N)
-                {
-                    // Discard
-                    awaitingSaveInput = false;
-                }
-            }
+            return tempPiece;
         }
+        public void SaveToJson()
+        {
+            var directory = Directory.CreateDirectory("Pieces");
+            var fileName = Path.Combine(directory.FullName, $"{Title}.json");
+            var options = new JsonSerializerOptions();
+            options.WriteIndented = true;
+            string jsonString = JsonSerializer.Serialize(this, options);
+            File.WriteAllText(fileName, jsonString);
+        }
+        public static Piece LoadFromJson(string pieceTitle)
+        {
+            var fileName = Path.Combine("Pieces", $"{pieceTitle}.json");
+            var jsonString = File.ReadAllText(fileName);
+            var jsonDocRoot = JsonDocument.Parse(jsonString).RootElement;
 
+            string title = jsonDocRoot.GetProperty("Title").GetString();
+            int numMeasures = jsonDocRoot.GetProperty("NumMeasures").GetInt32();
+            var keySig = jsonDocRoot.GetProperty("KeySig").GetKeySignature();
+            var timeSig = jsonDocRoot.GetProperty("TimeSig").GetTimeSignature();
+            var measures = jsonDocRoot.GetProperty("Measures").EnumerateArray()
+                .Select(m => m.GetMeasure(keySig, timeSig)).ToList();
 
+            return new Piece(title, numMeasures, keySig, timeSig, measures);
+        }
         public void PrintInfo()
         {
             Console.WriteLine($"Title: {Title}");
