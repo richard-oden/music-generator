@@ -223,6 +223,9 @@ namespace MusicGenerator
             options.WriteIndented = true;
             string jsonString = JsonSerializer.Serialize(this, options);
             File.WriteAllText(fileName, jsonString);
+            Console.Clear();
+            Console.WriteLine("Piece was saved successfully!");
+            Console.ReadKey();
         }
         public static Piece LoadFromJson(string pieceTitle)
         {

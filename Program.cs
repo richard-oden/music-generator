@@ -45,7 +45,7 @@ namespace MusicGenerator
                             newPiece = Piece.GenerateManually();
                             break;
                         case 4:
-                            loadedPiece = Piece.LoadFromJson("That Sonata");
+                            loadedPiece = FileLoader.Open();
                             break;
                         case 5:
                             Console.WriteLine("Goodbye!");
@@ -80,7 +80,7 @@ namespace MusicGenerator
                     }
                     else if (loadedPiece != null)
                     {
-                        Console.WriteLine($"{loadedPiece.Title} was successfully loaded!");
+                        Console.WriteLine($"{loadedPiece.Title} was successfully loaded!\n");
                         loadedPiece.PrintInfo();
                         var printer = new StaffPrinter(loadedPiece);
                         printer.Print();
