@@ -14,6 +14,19 @@ namespace MusicGenerator
             return enumerable.ElementAt(index);
         }
 
+        public static string FormatToString<T>(this IEnumerable<T> source, string conjunction)
+        {
+            if (source == null || !source.Any()) return null;
+            var sourceArr = source.ToArray();
+            string output = "";
+            for (int i = 0; i < sourceArr.Length; i++) 
+            {
+                output += sourceArr[i];
+                if (i != sourceArr.Length-1) output += (sourceArr.Length == 2 ? " " : ", ");
+                if (i == sourceArr.Length-2) output += $"{conjunction} ";
+            }
+            return output;
+        }
         public static string FirstCharToUpper(this string input) =>
         input switch
         {

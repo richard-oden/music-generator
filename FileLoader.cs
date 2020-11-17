@@ -54,7 +54,7 @@ namespace MusicGenerator
             while (true)
             {
                 var directory = Directory.CreateDirectory("Pieces");
-                FileInfo[] pieceFiles = directory.GetFiles("*.json", SearchOption.AllDirectories);
+                FileInfo[] pieceFiles = directory.GetFiles("*.json", SearchOption.TopDirectoryOnly);
                 Console.WriteLine("Currently saved pieces:");
                 ListPieces(pieceFiles);
                 Console.WriteLine("Enter the title for the piece you'd like to load, or type 'quit' to cancel.");

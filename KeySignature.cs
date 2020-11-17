@@ -84,7 +84,7 @@ namespace MusicGenerator
                 }
                 else
                 {
-                    Console.WriteLine($"One or more parts of '{input}' are not valid.");
+                    Console.WriteLine($"One or more parts of '{input}' are not valid. Ensure your key signature has no double sharps or double flats.");
                 }
             }
             else

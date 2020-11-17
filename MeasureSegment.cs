@@ -34,5 +34,16 @@ namespace MusicGenerator
                 throw new Exception($"{staffSymbol} is not a valid staff symbol.");
             }
         }
+
+        public static void ShowStaffSymbolLegend()
+        {
+            var noteSymbols = RhythmInfos.Select(rI => $"- {(string)rI[1]} = {(string)rI[0]}");
+            var restSymbols = RhythmInfos.Select(rI => $"- {((string)rI[1]).ToLower()} = {(string)rI[0]} rest");
+            Console.Clear();
+            foreach (var nS in noteSymbols) Console.WriteLine(nS);
+            Console.WriteLine();
+            foreach (var rS in restSymbols) Console.WriteLine(rS);
+            Console.ReadKey();
+        }
     }
 }

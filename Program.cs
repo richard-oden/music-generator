@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Threading;
 
 namespace MusicGenerator
 {   
@@ -24,67 +26,48 @@ namespace MusicGenerator
                 Console.WriteLine("4. Load a saved piece of music.");
                 Console.WriteLine("5. Exit program.");
                 
-                int parsedInput;
                 string userInput = Console.ReadLine();
                 Console.Clear();
                 
+                int parsedInput;
                 bool validInput = int.TryParse(userInput, out parsedInput);
                 if (validInput)
                 {
-                    Piece newPiece = null;
-                    Piece loadedPiece = null;
+                    Piece pieceToDisplay = null;
+                    bool pieceSaved = false;
                     switch (parsedInput)
                     {
                         case 1:
-                            newPiece = Piece.GenerateProcedurally();
+                            pieceToDisplay = Piece.GenerateProcedurally();
                             break;
                         case 2:
-                            newPiece = Piece.GenerateProcedurallyWithParameters();
+                            pieceToDisplay = Piece.GenerateProcedurallyWithParameters();
                             break;
                         case 3:
-                            newPiece = Piece.GenerateManually();
+                            pieceToDisplay = Piece.GenerateManually();
+                            pieceSaved = true;
                             break;
                         case 4:
-                            loadedPiece = FileLoader.Open();
+                            pieceToDisplay = FileLoader.Open();
+                            pieceSaved = true;
                             break;
                         case 5:
                             Console.WriteLine("Goodbye!");
+                            Thread.Sleep(1000);
                             programRunning = false;
                             break;
                         default:
 
                             break; 
                     }
-                    if (newPiece != null)
+                    if (pieceToDisplay != null)
                     {
-                        newPiece.PrintInfo();
-                        var printer = new StaffPrinter(newPiece);
-                        printer.Print();
-                        Console.WriteLine($"Would you like to save {newPiece.Title}? (Y/N)");
-                        bool awaitingSaveInput = true;
-                        while (awaitingSaveInput)
-                        {
-                            var saveInput = Console.ReadKey();
-                            if (saveInput.Key == ConsoleKey.Y)
-                            {
-                                newPiece.SaveToJson();
-                                awaitingSaveInput = false;
-                            }
-                            else if (saveInput.Key == ConsoleKey.N)
-                            {
-                                // Discard
-                                awaitingSaveInput = false;
-                            }
-                        }
-                        newPiece = null;
-                    }
-                    else if (loadedPiece != null)
-                    {
-                        Console.WriteLine($"{loadedPiece.Title} was successfully loaded!\n");
-                        loadedPiece.PrintInfo();
-                        var printer = new StaffPrinter(loadedPiece);
+                        pieceToDisplay.PrintInfo();
+                        var printer = new StaffPrinter(pieceToDisplay);
                         printer.Print();
                         Console.ReadKey();
+                        if (!pieceSaved) pieceToDisplay.SavePrompt();
+                        pieceToDisplay = null;
                     }
                 }
                 else

@@ -33,7 +33,6 @@ namespace MusicGenerator
             }
             Measures = measures;
         }
-
         public Piece(string title, int numMeasures, KeySignature keySig, TimeSignature timeSig, List<Measure> measures)
         {
             Title = title;
@@ -42,12 +41,31 @@ namespace MusicGenerator
             TimeSig = timeSig;
             Measures = measures;
         }
-
         public static Piece GenerateProcedurally()
         {
             return new Piece(TitleGenerator.Generate(), _random.Next(1, 16), new KeySignature(), new TimeSignature());
         }
-
+        public bool Rename()
+        {
+            while (true)
+            {
+                Console.WriteLine($"Enter a new name for {Title} or type 'quit' to cancel.");
+                string titleInput = Console.ReadLine();
+                if (titleInput.ToLower() == "quit")
+                {
+                    return false;
+                }
+                else if (!String.IsNullOrEmpty(titleInput))
+                {
+                    Title = titleInput;
+                    return true;
+                }
+                else
+                {
+                    Console.WriteLine("Title must contain at least one character.");
+                }
+            }
+        }
         private static Dictionary<string, object> getParameters()
         {
             var parameters = new Dictionary<string, object>();
@@ -76,8 +94,15 @@ namespace MusicGenerator
                 int numMeasures;
                 if (int.TryParse(numMeasuresInput, out numMeasures))
                 {
-                    parameters.Add("measures", numMeasures);
-                    numMeasuresFound = true;
+                    if (numMeasures >= 1)
+                    {
+                        parameters.Add("measures", numMeasures);
+                        numMeasuresFound = true;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Piece must contain at least one measure.");
+                    }
                 }
                 else
                 {
@@ -113,14 +138,12 @@ namespace MusicGenerator
 
             return parameters;
         }
-
         public static Piece GenerateProcedurallyWithParameters()
         {
             Dictionary<string, object> parameters = getParameters();
             return new Piece((string)parameters["title"], (int)parameters["measures"],
                 (KeySignature)parameters["key"], (TimeSignature)parameters["time"]);
         }
-
         private static void printInstructions(bool show)
         {
             if (show)
@@ -131,6 +154,7 @@ namespace MusicGenerator
                 Console.WriteLine("- BACKSPACE to delete previous rest/note");
                 Console.WriteLine("- I to toggle instructions");
                 Console.WriteLine("- D to toggle piece description");
+                Console.WriteLine("- L to show staff symbol legend");
                 Console.WriteLine("- S to save piece");
                 Console.WriteLine("- ESC to exit to main menu");
             }
@@ -208,24 +232,84 @@ namespace MusicGenerator
                     }
                     else if (editInput.Key == ConsoleKey.I) showInstructions = !showInstructions;
                     else if (editInput.Key == ConsoleKey.D) showDescription = !showDescription;
-                    else if (editInput.Key == ConsoleKey.Escape) stillEditing = false;
+                    else if (editInput.Key == ConsoleKey.L) MeasureSegment.ShowStaffSymbolLegend();
+                    else if (editInput.Key == ConsoleKey.S)
+                    {
+                        if (tempPiece.SaveToJson()) stillEditing = false;
+                    }
+                    else if (editInput.Key == ConsoleKey.Escape) 
+                    {
+                        tempPiece.SavePrompt();
+                        stillEditing = false;
+                    }
                     Console.Clear();
                 }
                 currentMeasureNum++;
             }
             return tempPiece;
         }
-        public void SaveToJson()
+        public bool ResolveNameConflict()
+        {
+            while (true)
+            {
+                Console.WriteLine($"A piece named {Title} already exists. What would you like to do?");
+                Console.WriteLine("O - Overwrite previous piece");
+                Console.WriteLine("R - Rename new piece");
+                Console.WriteLine("C - Cancel");
+                var fileNameConflictInput = Console.ReadKey();
+                Console.Clear();
+                if (fileNameConflictInput.Key == ConsoleKey.O)
+                {
+                    return true;
+                }
+                else if (fileNameConflictInput.Key == ConsoleKey.R)
+                {
+                    return Rename();
+                }
+                else if (fileNameConflictInput.Key == ConsoleKey.C)
+                {
+                    return false;
+                }
+            }
+        }
+        public bool SaveToJson()
         {
             var directory = Directory.CreateDirectory("Pieces");
             var fileName = Path.Combine(directory.FullName, $"{Title}.json");
-            var options = new JsonSerializerOptions();
-            options.WriteIndented = true;
-            string jsonString = JsonSerializer.Serialize(this, options);
-            File.WriteAllText(fileName, jsonString);
-            Console.Clear();
-            Console.WriteLine("Piece was saved successfully!");
-            Console.ReadKey();
+            bool canSave = false;
+            if (!File.Exists(fileName) || ResolveNameConflict())
+            {
+                canSave = true;
+            }
+            if (canSave)
+            {
+                var options = new JsonSerializerOptions();
+                options.WriteIndented = true;
+                string jsonString = JsonSerializer.Serialize(this, options);
+                File.WriteAllText(fileName, jsonString);
+                Console.Clear();
+                Console.WriteLine("Piece was saved successfully!");
+                Console.ReadKey();
+            }
+            return canSave;
+        }
+        public void SavePrompt()
+        {
+            Console.WriteLine($"Would you like to save {Title}? (Y/N)");
+            bool awaitingSaveInput = true;
+            while (awaitingSaveInput)
+            {
+                var saveInput = Console.ReadKey();
+                Console.Clear();
+                if (saveInput.Key == ConsoleKey.Y)
+                {
+                    awaitingSaveInput = !SaveToJson();
+                }
+                else if (saveInput.Key == ConsoleKey.N)
+                {
+                    awaitingSaveInput = false;
+                }
+            }
         }
         public static Piece LoadFromJson(string pieceTitle)
         {
@@ -248,7 +332,6 @@ namespace MusicGenerator
             Console.WriteLine($"The key signature is {KeySig.Tonic}{KeySig.Accidental} {KeySig.Mode}.");
             Console.WriteLine($"The time signature is {TimeSig.NotesPerMeasure}/{TimeSig.NoteDuration}.");
         }
-        
         public void ListNotes()
         {
             foreach (Measure measure in Measures)

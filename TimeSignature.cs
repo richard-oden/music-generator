@@ -39,6 +39,8 @@ namespace MusicGenerator
                 else
                 {
                     Console.WriteLine($"One or more integers in {input} are not valid.");
+                    Console.WriteLine($"Valid Numerators: {TimeSigNumerators.FormatToString("and")}");
+                    Console.WriteLine($"Valid Denominators: {TimeSigDenominators.FormatToString("and")}");
                 }
             }
             else

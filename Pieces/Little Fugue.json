@@ -1,0 +1,221 @@
+{
+  "Title": "Little Fugue",
+  "NumMeasures": 3,
+  "KeySig": {
+    "Tonic": "G",
+    "Accidental": "",
+    "Mode": "Minor",
+    "NumAccidentals": -2,
+    "TypeOfAccidental": "b"
+  },
+  "TimeSig": {
+    "NotesPerMeasure": 4,
+    "NoteDuration": 4
+  },
+  "Measures": [
+    {
+      "MeasureLength": 1,
+      "CurrentLength": 1,
+      "Contents": [
+        {
+          "StaffLine": 9,
+          "Duration": 0.25,
+          "RhythmicValue": "quarter note",
+          "StaffSymbol": "Q"
+        },
+        {
+          "StaffLine": 5,
+          "Duration": 0.25,
+          "RhythmicValue": "quarter note",
+          "StaffSymbol": "Q"
+        },
+        {
+          "StaffLine": 7,
+          "Duration": 0.375,
+          "RhythmicValue": "dotted quarter note",
+          "StaffSymbol": "Q."
+        },
+        {
+          "StaffLine": 8,
+          "Duration": 0.125,
+          "RhythmicValue": "1/8th note",
+          "StaffSymbol": "E"
+        }
+      ]
+    },
+    {
+      "MeasureLength": 1,
+      "CurrentLength": 1,
+      "Contents": [
+        {
+          "StaffLine": 9,
+          "Duration": 0.125,
+          "RhythmicValue": "1/8th note",
+          "StaffSymbol": "E"
+        },
+        {
+          "StaffLine": 7,
+          "Duration": 0.125,
+          "RhythmicValue": "1/8th note",
+          "StaffSymbol": "E"
+        },
+        {
+          "StaffLine": 8,
+          "Duration": 0.125,
+          "RhythmicValue": "1/8th note",
+          "StaffSymbol": "E"
+        },
+        {
+          "StaffLine": 9,
+          "Duration": 0.125,
+          "RhythmicValue": "1/8th note",
+          "StaffSymbol": "E"
+        },
+        {
+          "StaffLine": 10,
+          "Duration": 0.125,
+          "RhythmicValue": "1/8th note",
+          "StaffSymbol": "E"
+        },
+        {
+          "StaffLine": 8,
+          "Duration": 0.125,
+          "RhythmicValue": "1/8th note",
+          "StaffSymbol": "E"
+        },
+        {
+          "StaffLine": 12,
+          "Duration": 0.25,
+          "RhythmicValue": "quarter note",
+          "StaffSymbol": "Q"
+        }
+      ]
+    },
+    {
+      "MeasureLength": 1,
+      "CurrentLength": 1,
+      "Contents": [
+        {
+          "StaffLine": 9,
+          "Duration": 0.125,
+          "RhythmicValue": "1/8th note",
+          "StaffSymbol": "E"
+        },
+        {
+          "StaffLine": 12,
+          "Duration": 0.125,
+          "RhythmicValue": "1/8th note",
+          "StaffSymbol": "E"
+        },
+        {
+          "StaffLine": 8,
+          "Duration": 0.125,
+          "RhythmicValue": "1/8th note",
+          "StaffSymbol": "E"
+        },
+        {
+          "StaffLine": 12,
+          "Duration": 0.125,
+          "RhythmicValue": "1/8th note",
+          "StaffSymbol": "E"
+        },
+        {
+          "StaffLine": 7,
+          "Duration": 0.125,
+          "RhythmicValue": "1/8th note",
+          "StaffSymbol": "E"
+        },
+        {
+          "StaffLine": 8,
+          "Duration": 0.0625,
+          "RhythmicValue": "1/16th note",
+          "StaffSymbol": "S"
+        },
+        {
+          "StaffLine": 9,
+          "Duration": 0.0625,
+          "RhythmicValue": "1/16th note",
+          "StaffSymbol": "S"
+        },
+        {
+          "StaffLine": 8,
+          "Duration": 0.125,
+          "RhythmicValue": "1/8th note",
+          "StaffSymbol": "E"
+        },
+        {
+          "StaffLine": 12,
+          "Duration": 0.125,
+          "RhythmicValue": "1/8th note",
+          "StaffSymbol": "E"
+        }
+      ]
+    },
+    {
+      "MeasureLength": 1,
+      "CurrentLength": 1,
+      "Contents": [
+        {
+          "StaffLine": 9,
+          "Duration": 0.125,
+          "RhythmicValue": "1/8th note",
+          "StaffSymbol": "E"
+        },
+        {
+          "StaffLine": 12,
+          "Duration": 0.0625,
+          "RhythmicValue": "1/16th note",
+          "StaffSymbol": "S"
+        },
+        {
+          "StaffLine": 9,
+          "Duration": 0.0625,
+          "RhythmicValue": "1/16th note",
+          "StaffSymbol": "S"
+        },
+        {
+          "StaffLine": 8,
+          "Duration": 0.125,
+          "RhythmicValue": "1/8th note",
+          "StaffSymbol": "E"
+        },
+        {
+          "StaffLine": 12,
+          "Duration": 0.0625,
+          "RhythmicValue": "1/16th note",
+          "StaffSymbol": "S"
+        },
+        {
+          "StaffLine": 8,
+          "Duration": 0.0625,
+          "RhythmicValue": "1/16th note",
+          "StaffSymbol": "S"
+        },
+        {
+          "StaffLine": 7,
+          "Duration": 0.125,
+          "RhythmicValue": "1/8th note",
+          "StaffSymbol": "E"
+        },
+        {
+          "StaffLine": 8,
+          "Duration": 0.0625,
+          "RhythmicValue": "1/16th note",
+          "StaffSymbol": "S"
+        },
+        {
+          "StaffLine": 9,
+          "Duration": 0.0625,
+          "RhythmicValue": "1/16th note",
+          "StaffSymbol": "S"
+        },
+        {
+          "StaffLine": 8,
+          "Duration": 0.25,
+          "RhythmicValue": "quarter note",
+          "StaffSymbol": "Q"
+        }
+      ]
+    }
+  ]
+}
